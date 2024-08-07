@@ -1,0 +1,31 @@
+# Игнорирование конфигурационных файлов с секретами
+appsettings.json
+appsettings.*.json
+
+# Игнорирование файлов конфигурации среды
+appsettings.Development.json
+appsettings.Production.json
+
+# Игнорирование других потенциальных секретов
+secrets.json
+
+# Игнорирование других стандартных файлов и папок
+bin/
+obj/
+.vscode/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+.vscode/
+.idea/
+*.sln.ide
+
+# Игнорирование локальных настроек
+local.settings.json
+
+# Игнорирование временных файлов
+*.swp
+*.tmp
+*.log
