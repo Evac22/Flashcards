@@ -21,6 +21,7 @@ obj/
 .vscode/
 .idea/
 *.sln.ide
+.vs/
 
 # Игнорирование локальных настроек
 local.settings.json
