@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
+using Flashcards.Application.DTOs;
 
-namespace Flashcards.Application.Validators
+namespace Flashcards.Application.Validators;
+
+public class CategoryValidator : AbstractValidator<CategoryDto>
 {
-    internal class CategoryValidator
+    public CategoryValidator()
     {
+        RuleFor(x => x.Name).NotEmpty().WithMessage("Category name is required.");
     }
 }
+

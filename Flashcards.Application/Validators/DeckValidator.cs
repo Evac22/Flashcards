@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Flashcards.Application.DTOs;
+using FluentValidation;
 
-namespace Flashcards.Application.Validators
+namespace Flashcards.Application.Validators;
+
+public class DeckValidator : AbstractValidator<DeckDto>
 {
-    internal class DeckValidator
+    public DeckValidator()
     {
+        RuleFor(x => x.Title).NotEmpty().WithMessage("Deck title is required.");
     }
 }

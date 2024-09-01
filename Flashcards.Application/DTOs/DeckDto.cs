@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
-namespace Flashcards.Application.DTOs
+namespace Flashcards.Application.DTOs;
+
+public class DeckDto
 {
-    internal class DeckDto
-    {
-    }
+    public int Id { get; set; }
+    public string Title { get; set; }
 }

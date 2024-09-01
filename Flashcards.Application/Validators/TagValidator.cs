@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Flashcards.Application.DTOs;
+using FluentValidation;
 
-namespace Flashcards.Application.Validators
+namespace Flashcards.Application.Validators;
+
+public class TagValidator : AbstractValidator<TagDto>
 {
-    internal class TagValidator
+    public TagValidator()
     {
+        RuleFor(x => x.Name).NotEmpty().WithMessage("Tag name is required.");
     }
 }

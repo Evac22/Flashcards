@@ -1,19 +1,43 @@
-using Flashcards.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation.AspNetCore;
+using AutoMapper;
+using Flashcards.Application.Mappers;
+using Flashcards.Core.Entities;
+using Flashcards.Infrastructure.Data;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Подключение к базе данных
+// Добавление DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Добавление сервисов для контроллеров и представлений
+// Добавление Identity
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+// Добавление AutoMapper
+builder.Services.AddAutoMapper(typeof(FlashcardsMappingProfile));
+
+// Добавление FluentValidation
+builder.Services.AddFluentValidationAutoValidation(config => config.ImplicitlyValidateChildProperties = true)
+    .AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+// Добавление контроллеров с представлениями (если нужны представления)
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Настройка обработки запросов
-if (!app.Environment.IsDevelopment())
+// Конфигурация пайплайна HTTP-запросов
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
@@ -24,10 +48,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapControllers();
 
 app.Run();
