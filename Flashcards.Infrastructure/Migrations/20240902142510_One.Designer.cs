@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Flashcards.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240817063820_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240902142510_One")]
+    partial class One
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,17 +26,17 @@ namespace Flashcards.Infrastructure.Migrations
 
             modelBuilder.Entity("FlashcardTag", b =>
                 {
-                    b.Property<int>("FlashcardId")
+                    b.Property<int>("FlashcardsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TagId")
+                    b.Property<int>("TagsId")
                         .HasColumnType("int");
 
-                    b.HasKey("FlashcardId", "TagId");
+                    b.HasKey("FlashcardsId", "TagsId");
 
-                    b.HasIndex("TagId");
+                    b.HasIndex("TagsId");
 
-                    b.ToTable("FlashcardTag");
+                    b.ToTable("FlashcardTag", (string)null);
                 });
 
             modelBuilder.Entity("Flashcards.Core.Entities.Category", b =>
@@ -64,20 +64,11 @@ namespace Flashcards.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Decks");
                 });
@@ -94,18 +85,19 @@ namespace Flashcards.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DeckId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DeckId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Question")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("DeckId");
 
@@ -133,42 +125,39 @@ namespace Flashcards.Infrastructure.Migrations
                 {
                     b.HasOne("Flashcards.Core.Entities.Flashcard", null)
                         .WithMany()
-                        .HasForeignKey("FlashcardId")
+                        .HasForeignKey("FlashcardsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Flashcards.Core.Entities.Tag", null)
                         .WithMany()
-                        .HasForeignKey("TagId")
+                        .HasForeignKey("TagsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Flashcards.Core.Entities.Deck", b =>
-                {
-                    b.HasOne("Flashcards.Core.Entities.Category", "Category")
-                        .WithMany("Decks")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("Flashcards.Core.Entities.Flashcard", b =>
                 {
+                    b.HasOne("Flashcards.Core.Entities.Category", "Category")
+                        .WithMany("Flashcards")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Flashcards.Core.Entities.Deck", "Deck")
                         .WithMany("Flashcards")
                         .HasForeignKey("DeckId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Category");
+
                     b.Navigation("Deck");
                 });
 
             modelBuilder.Entity("Flashcards.Core.Entities.Category", b =>
                 {
-                    b.Navigation("Decks");
+                    b.Navigation("Flashcards");
                 });
 
             modelBuilder.Entity("Flashcards.Core.Entities.Deck", b =>

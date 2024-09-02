@@ -5,7 +5,7 @@
 namespace Flashcards.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class One : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,6 +24,19 @@ namespace Flashcards.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Decks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Decks", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
                 {
@@ -37,27 +50,6 @@ namespace Flashcards.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Decks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Decks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Decks_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Flashcards",
                 columns: table => new
                 {
@@ -65,12 +57,18 @@ namespace Flashcards.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Question = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Answer = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     DeckId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Flashcards", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Flashcards_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Flashcards_Decks_DeckId",
                         column: x => x.DeckId,
@@ -83,29 +81,29 @@ namespace Flashcards.Infrastructure.Migrations
                 name: "FlashcardTag",
                 columns: table => new
                 {
-                    FlashcardId = table.Column<int>(type: "int", nullable: false),
-                    TagId = table.Column<int>(type: "int", nullable: false)
+                    FlashcardsId = table.Column<int>(type: "int", nullable: false),
+                    TagsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FlashcardTag", x => new { x.FlashcardId, x.TagId });
+                    table.PrimaryKey("PK_FlashcardTag", x => new { x.FlashcardsId, x.TagsId });
                     table.ForeignKey(
-                        name: "FK_FlashcardTag_Flashcards_FlashcardId",
-                        column: x => x.FlashcardId,
+                        name: "FK_FlashcardTag_Flashcards_FlashcardsId",
+                        column: x => x.FlashcardsId,
                         principalTable: "Flashcards",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FlashcardTag_Tags_TagId",
-                        column: x => x.TagId,
+                        name: "FK_FlashcardTag_Tags_TagsId",
+                        column: x => x.TagsId,
                         principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Decks_CategoryId",
-                table: "Decks",
+                name: "IX_Flashcards_CategoryId",
+                table: "Flashcards",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
@@ -114,9 +112,9 @@ namespace Flashcards.Infrastructure.Migrations
                 column: "DeckId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FlashcardTag_TagId",
+                name: "IX_FlashcardTag_TagsId",
                 table: "FlashcardTag",
-                column: "TagId");
+                column: "TagsId");
         }
 
         /// <inheritdoc />
@@ -132,10 +130,10 @@ namespace Flashcards.Infrastructure.Migrations
                 name: "Tags");
 
             migrationBuilder.DropTable(
-                name: "Decks");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Decks");
         }
     }
 }
